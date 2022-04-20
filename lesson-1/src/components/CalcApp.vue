@@ -21,6 +21,45 @@
         <button class="btn-operation btn" @click="exponet()">**</button>
         <button class="btn-operation btn" @click="integerDivide()">%</button>
       </div>
+      <div class="number-wrapper">
+        <button
+          class="btn btn-num"
+          v-show="show"
+          v-for="(num, idx) of numbers"
+          :key="idx"
+          @click="inputNum(num)"
+        >
+          {{ num }}
+        </button>
+        <button class="btn btn-accent" @click="removeLast" v-show="show">
+          &#129040;
+        </button>
+      </div>
+      <div class="checkbox-wrapper">
+        <label for="show-numbers">show numbers</label>
+        <input
+          type="checkbox"
+          class="checkbox-item"
+          id="show-numbers"
+          v-model="show"
+        />
+        <label for="operand1-show">Operand-1</label>
+        <input
+          type="radio"
+          class="checkbox-item"
+          id="operand1-show"
+          value="operand1"
+          v-model="picked"
+        />
+        <label for="operand2-show">Operand-2</label>
+        <input
+          type="radio"
+          class="checkbox-item"
+          id="operand2-show"
+          value="operand2"
+          v-model="picked"
+        />
+      </div>
     </div>
     <span class="result"> Результат: {{ result }}</span>
   </div>
@@ -34,9 +73,12 @@ export default {
   },
   data() {
     return {
+      show: false,
+      picked: "",
       result: "",
       operand1: "",
       operand2: "",
+      numbers: [1, 2, 3, 4, 5, 7, 8, 9, 0],
     };
   },
   methods: {
@@ -45,8 +87,13 @@ export default {
       this.operand2 = "";
     },
     add() {
-      this.result = this.operand1 + this.operand2;
-      this.clearInputs();
+      if (Number.isInteger(this.char)) {
+        this.result = this.operand1 + this.operand2;
+        this.clearInputs();
+      } else {
+        this.result = parseInt(this.operand1) + parseInt(this.operand2);
+        this.clearInputs();
+      }
     },
     subtract() {
       this.result = this.operand1 - this.operand2;
@@ -72,6 +119,14 @@ export default {
       this.result = Math.floor(this.operand1 / this.operand2);
       this.clearInputs();
     },
+    removeLast() {},
+    inputNum(char) {
+      if (this.picked === "operand1") {
+        this.operand1 += char;
+      } else {
+        this.operand2 += char;
+      }
+    },
   },
 };
 </script>
@@ -96,14 +151,15 @@ export default {
 .result {
   display: block;
   font-size: 16px;
+  font-weight: 700;
   text-transform: uppercase;
   text-align: left;
+  color: lightcoral;
 }
 .btn-wrapper {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  margin-bottom: 18px;
 }
 .btn {
   height: 50px;
@@ -116,6 +172,9 @@ export default {
 }
 .btn-num {
   background-color: #42b983;
+  margin: 0 0 14px 0;
+  width: 30px;
+  height: 30px;
 }
 .btn-operation {
   background-color: coral;
@@ -128,11 +187,19 @@ export default {
 }
 
 .btn-accent {
-  width: 50%;
+  width: 30px;
+  height: 30px;
   text-transform: uppercase;
   background-color: indianred;
 }
 .btn-accent:hover {
   background-color: #ea4343;
+}
+.checkbox-wrapper {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 14px 0;
 }
 </style>
